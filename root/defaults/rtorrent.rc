@@ -48,8 +48,15 @@ schedule = low_diskspace,5,60,close_low_diskspace=100M
 # Default directory
 directory.default.set = /downloads/incoming
 
-# Bind
-network.bind_address.set = 0.0.0.0
+# Dynamically get the IP address of wg0 and bind rtorrent to it
+method.insert = cfg.interface.bind, string|const|private, (cat,"wg0")
+# Get IPv4 address of a given interface
+method.insert = get_interface_ipv4_address, simple|private, \
+    "execute.capture=bash,-c,\"$cat=\\\"echo -n \$(ip -o -4 addr show \\\",$argument.0=,\\\" | grep -Po 'inet \\\\\\\\\\K[\\\\\\\\\\d.]+')\\\"\""
+# The IP address the listening socket and outgoing connections is bound to. (bind)
+schedule2 = set_bind_address, 0, 0, \
+    "branch=((cfg.interface.bind)), \
+        ((network.bind_address.set,(get_interface_ipv4_address,(cfg.interface.bind))))"
 
 # Port
 network.port_range.set = 51413-51413
