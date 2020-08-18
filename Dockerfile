@@ -1,6 +1,6 @@
 FROM lsiobase/nginx:3.11
 
-LABEL maintainer="horjulf"
+LABEL maintainer="joe-p"
 
 # copy patches
 COPY patches/ /defaults/patches/
@@ -56,7 +56,8 @@ RUN \
 	wget \
 	xz \
 	zip \
-	zlib && \
+	zlib \
+	wireguard-tools && \
  echo "**** setup python pip dependencies ****" && \
  python3 -m pip install --no-cache-dir -U \
 	cloudscraper \
@@ -85,6 +86,8 @@ RUN \
  echo "**** patch snoopy.inc for rss fix ****" && \
  cd /app/rutorrent/php && \
  patch < /defaults/patches/snoopy.patch && \
+ echo "**** fix wg-quick ****" && \
+ sed -i /net\.ipv4\.conf\.all\.src_valid_mark/d `which wg-quick` && \
  echo "**** cleanup ****" && \
  apk del --purge \
 	build-dependencies && \
