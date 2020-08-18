@@ -15,6 +15,16 @@ if [ -S "${RTORRENT_LOCK}" ] && ! pgrep rtorrent > /dev/null; then
 	rm -f "${RTORRENT_LOCK}"
 fi
 
+if wg-quick up wg0 ; then
+    echo "wg0 is up"
+else
+    echo "# [ERROR] Failed to bring wg0 up"
+	echo "# Retrying in 30 seconds..."
+	sleep 30
+	exit 1
+fi
+
+
 exec s6-setuidgid abc dtach -N "${RTORRENT_LOCK}" \
 	/usr/bin/rtorrent \
 		-n -o import=/config/rtorrent/rtorrent.rc &
