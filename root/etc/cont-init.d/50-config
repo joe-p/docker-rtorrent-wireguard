@@ -22,7 +22,7 @@ mkdir -p /config/wireguard
 
 # use nginx.conf with htpasswd
 [[ ! -e /config/nginx.conf ]] && \
-	cp /defaults/nginx.conf/ /config/nginx/nginx.conf
+	cp /defaults/nginx.conf /config/nginx/nginx.conf
 
 # copy over any theme files to themes folder
 [[ -e /config/themes ]] && \
