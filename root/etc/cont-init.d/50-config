@@ -20,7 +20,7 @@ cp -pr /config/rutorrent/settings/* /app/rutorrent/conf/
 
 
 # use nginx.conf with htpasswd
-[[ -e /config/nginx.conf ]] && \
+[[ ! -e /config/nginx.conf ]] && \
 	cp /defaults/nginx.conf/ /config/nginx/nginx.conf
 
 # copy over any theme files to themes folder
