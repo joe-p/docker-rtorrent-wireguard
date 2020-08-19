@@ -1,19 +1,45 @@
-# Docker rutorrent-autodl
+# Docker ruvpn
 
-Based on linuxserver/rutorrent
+Based on horjulf/rutorrent-autodl. Adds support for wireguard VPN connections. 
+
+## Changes Made
+Most of the changes from horjulf/rutorrent-autodl were made to ensure a wireguard connection is used by rtorrent.
+
+### Summary of Changes
+* `--cap-add NET_ADMIN` and `--sysctl net.ipv4.conf.all.src_valid_mark=1` are needed to use wireguard
+* rtorrent will only start when wg0 is brought up successfully
+* rtorrent will bind to wg0 (view rtorrent.rc to see how it dynamically gets the IP of wg0)
+* nginx now uses htpasswd for authentication
+* `/config/wireguard/wg0.conf` and `/config/nginx/.htpasswd` must be manually created (see respective usage sections)
 
 ## Usage
 
+### docker create
 ```sh
-docker create --name=rutorrent \
--v <path to data>:/config \
--v <path to downloads>:/downloads \
--e PGID=<gid> -e PUID=<uid> \
--e TZ=<timezone> \
+docker create --name=ruvpn \
+-v <path for config>:/config \
+-v <path for downloads>/downloads \
+-e PGID=<GID> -e PUID=<UID> \
+-e TZ=<TZ timezone> \
 -p 80:80 -p 5000:5000 \
 -p 51413:51413 -p 6881:6881/udp \
-horjulf/rutorrent-autodl
+--cap-add NET_ADMIN \
+--sysctl net.ipv4.conf.all.src_valid_mark=1 \
+joe-p/ruvpn
 ```
+
+After you create/run the container, you must create `/config/wireguard/wg0.conf` and `/config/nginx/.htpasswd` (see below)
+
+### htpasswd
+You will need to generate a .htpasswd file for authentication. It is strongly recommended to use `htpasswd` to generate this file within the container. 
+
+For example:
+`docker exec -it ruvpn htpasswd -cb /config/nginx/.htpasswd abc yourpasswordhere`
+
+### Wireguard
+You will need to write a wireguard configuration file compatible with wg-quick at `/config/wireguard/wg0.conf`. More information and examples can be found here: https://wiki.archlinux.org/index.php/WireGuard#Client_config.
+
+If you are looking for a VPN provider, Mullvad supports port forwarding and a handy wireguard config file generator. For more information on Mullvad or other VPN providers, check out https://www.privacytools.io/providers/vpn/#mullvad
 
 ## Parameters
 
@@ -26,13 +52,15 @@ http://192.168.x.x:8080 would show you what's running INSIDE the container on po
 * `-p 5000` - the port(s)
 * `-p 51413` - the port(s)
 * `-p 6881/udp` - the port(s)
-* `-v /config` - where rutorrent should store it's config files
+* `-v /config` - where config files are stored (for nginx, rtorrent, wireguard, etc.)
 * `-v /downloads` - path to your downloads folder
 * `-e PGID` for GroupID - see below for explanation
 * `-e PUID` for UserID - see below for explanation
 * `-e TZ` for timezone information, eg Europe/London
+* `--cap-add NET_ADMIN` to add the NET_ADMIN capability which is necessary for bringing up wg0
+* `--sysctl net.ipv4.conf.all.src_valid_mark=1` so we don't need to rely on wg-quick to set this value (since it won't be able to within the container)
 
-It is based on alpine linux with s6 overlay, for shell access whilst the container is running do `docker exec -it rutorrent /bin/bash`.
+It is based on alpine linux with s6 overlay, for shell access whilst the container is running do `docker exec -it ruvpn /bin/bash`.
 
 ### User / Group Identifiers
 
