@@ -1,4 +1,4 @@
-# Docker ruvpn
+# Docker rtorrent-wireguard
 
 Based on horjulf/rutorrent-autodl. Adds support for wireguard VPN connections. 
 
@@ -16,7 +16,7 @@ Most of the changes from horjulf/rutorrent-autodl were made to ensure a wireguar
 
 ### docker create
 ```sh
-docker create --name=ruvpn \
+docker create --name=rtorrent-wireguard \
 -v <path for config>:/config \
 -v <path for downloads>/downloads \
 -e PGID=<GID> -e PUID=<UID> \
@@ -25,7 +25,7 @@ docker create --name=ruvpn \
 -p 51413:51413 -p 6881:6881/udp \
 --cap-add NET_ADMIN \
 --sysctl net.ipv4.conf.all.src_valid_mark=1 \
-joe-p/ruvpn
+joe-p/rtorrent-wireguard
 ```
 
 After you create/run the container, you must create `/config/wireguard/wg0.conf` and `/config/nginx/.htpasswd` (see below)
@@ -34,7 +34,7 @@ After you create/run the container, you must create `/config/wireguard/wg0.conf`
 You will need to generate a .htpasswd file for authentication. It is strongly recommended to use `htpasswd` to generate this file within the container. 
 
 For example:
-`docker exec -it ruvpn htpasswd -cb /config/nginx/.htpasswd abc yourpasswordhere`
+`docker exec -it rtorrent-wireguard htpasswd -cb /config/nginx/.htpasswd abc yourpasswordhere`
 
 ### Wireguard
 You will need to write a wireguard configuration file compatible with wg-quick at `/config/wireguard/wg0.conf`. More information and examples can be found here: https://wiki.archlinux.org/index.php/WireGuard#Client_config.
@@ -60,7 +60,7 @@ http://192.168.x.x:8080 would show you what's running INSIDE the container on po
 * `--cap-add NET_ADMIN` to add the NET_ADMIN capability which is necessary for bringing up wg0
 * `--sysctl net.ipv4.conf.all.src_valid_mark=1` so we don't need to rely on wg-quick to set this value (since it won't be able to within the container)
 
-It is based on alpine linux with s6 overlay, for shell access whilst the container is running do `docker exec -it ruvpn /bin/bash`.
+It is based on alpine linux with s6 overlay, for shell access whilst the container is running do `docker exec -it rtorrent-wireguard /bin/bash`.
 
 ### User / Group Identifiers
 
