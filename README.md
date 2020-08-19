@@ -25,7 +25,7 @@ docker create --name=rtorrent-wireguard \
 -p 51413:51413 -p 6881:6881/udp \
 --cap-add NET_ADMIN \
 --sysctl net.ipv4.conf.all.src_valid_mark=1 \
-joe-p/rtorrent-wireguard
+joepol/rtorrent-wireguard
 ```
 
 After you create/run the container, you must create `/config/wireguard/wg0.conf` and `/config/nginx/.htpasswd` (see below)

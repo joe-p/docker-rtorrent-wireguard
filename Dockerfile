@@ -1,6 +1,6 @@
 FROM lsiobase/nginx:3.11
 
-LABEL maintainer="joe-p"
+LABEL maintainer="joepol"
 
 # copy patches
 COPY patches/ /defaults/patches/
