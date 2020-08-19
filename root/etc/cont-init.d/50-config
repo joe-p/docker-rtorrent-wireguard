@@ -18,6 +18,7 @@ done
 	cp /defaults/rtorrent.rc /config/rtorrent/rtorrent.rc
 cp -pr /config/rutorrent/settings/* /app/rutorrent/conf/
 
+mkdir -p /config/wireguard
 
 # use nginx.conf with htpasswd
 [[ ! -e /config/nginx.conf ]] && \
