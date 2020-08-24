@@ -15,7 +15,7 @@ if [ -S "${RTORRENT_LOCK}" ] && ! pgrep rtorrent > /dev/null; then
 	rm -f "${RTORRENT_LOCK}"
 fi
 
-if wg-quick up /config/wireguard/wg0.conf ; then
+if ping -c 3 -I wg0 1.1.1.1 || ping -c 3 -I wg0 8.8.8.8 || wg-quick up /config/wireguard/wg0.conf ; then
     echo "wg0 is up"
 else
     echo "# [ERROR] Failed to bring wg0 up"
@@ -35,3 +35,8 @@ wait ${DTACH_PID}
 echo "# rtorrent dtach session finished ${DTACH_PID}"
 
 sleep 1
+
+iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 8080 && \
+iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 443 -j REDIRECT --to-port 8080 && \
+ip6tables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 8080 && \
+ip6tables -t nat -A PREROUTING -i eth0 -p tcp --dport 443 -j REDIRECT --to-port 8080
