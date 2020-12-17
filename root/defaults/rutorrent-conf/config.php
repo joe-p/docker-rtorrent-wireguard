@@ -2,10 +2,17 @@
 	// configuration parameters
 
 	// for snoopy client
-	@define('HTTP_USER_AGENT', 'Mozilla/5.0 (Windows NT 6.0; WOW64; rv:12.0) Gecko/20100101 Firefox/12.0', true);
+	@define('HTTP_USER_AGENT', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36', true);
 	@define('HTTP_TIME_OUT', 30, true);	// in seconds
 	@define('HTTP_USE_GZIP', true, true);
 	$httpIP = null;				// IP string. Or null for any.
+	$httpProxy = array
+	(
+		'use' 	=> false,
+		'proto'	=> 'http',		// 'http' or 'https'
+		'host'	=> 'PROXY_HOST_HERE',
+		'port'	=> 3128
+	);
 
 	@define('RPC_TIME_OUT', 5, true);	// in seconds
 
@@ -30,8 +37,8 @@
 	// $scgi_port = 5000;
 	// $scgi_host = "127.0.0.1";
 
-	// For web->rtorrent link through unix domain socket
-	// (scgi_local in rtorrent conf file), change variables
+	// For web->rtorrent link through unix domain socket 
+	// (scgi_local in rtorrent conf file), change variables 
 	// above to something like this:
 	//
 	$scgi_port = 0;
@@ -61,6 +68,6 @@
 
 	$tempDirectory = '/config/rutorrent/profiles/tmp/';			// Temp directory. Absolute path with trail slash. If null, then autodetect will be used.
 
-	$canUseXSendFile = true;		// Use X-Sendfile feature if it exist
+	$canUseXSendFile = true;		// If true then use X-Sendfile feature if it exist
 
 	$locale = "UTF8";
