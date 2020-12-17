@@ -9,8 +9,7 @@ Most of the changes from horjulf/rutorrent-autodl were made to ensure a wireguar
 * `--cap-add NET_ADMIN` and `--sysctl net.ipv4.conf.all.src_valid_mark=1` are needed to use wireguard
 * rtorrent will only start when wg0 is brought up successfully
 * rtorrent will bind to wg0 (view rtorrent.rc to see how it dynamically gets the IP of wg0)
-* nginx now uses htpasswd for authentication
-* `/config/wireguard/wg0.conf` and `/config/nginx/.htpasswd` must be manually created (see respective usage sections)
+* `/config/wireguard/wg0.conf` must be manually created (see respective usage sections)
 
 ## Usage
 
@@ -28,13 +27,7 @@ docker create --name=rtorrent-wireguard \
 joepol/rtorrent-wireguard
 ```
 
-After you create/run the container, you must create `/config/wireguard/wg0.conf` and `/config/nginx/.htpasswd` (see below)
-
-### htpasswd
-You will need to generate a .htpasswd file for authentication. It is strongly recommended to use `htpasswd` to generate this file within the container. 
-
-For example:
-`docker exec -it rtorrent-wireguard htpasswd -cb /config/nginx/.htpasswd abc yourpasswordhere`
+After you create/run the container, you must create `/config/wireguard/wg0.conf` (see below)
 
 ### Wireguard
 You will need to write a wireguard configuration file compatible with wg-quick at `/config/wireguard/wg0.conf`. More information and examples can be found here: https://wiki.archlinux.org/index.php/WireGuard#Client_config.
